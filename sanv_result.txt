@@ -1,0 +1,24 @@
+SANV @ 0x44A52D18 — read-only via acpi_os_map_memory (2026-11-13)
+====================================================================
+HGMD=0x02  HGFL=0x00  SGGP=0x01
+HRE0=0x00  HRG0=0x090b000c  HRA0=0x00
+PWE0=0x00  PWG0=0x090b000d  PWA0=0x01
+RPBA=0xC0030000  PVID=0x8086  PDID=0x9a09
+raw 0x88..0x98: 02 00 01 00 0c 00 0b 09 00 00 0d 00 0b 09 01 00 00
+
+Decode:
+  SGGP=1            -> HGPO() is enabled (not a no-op)
+  PWG0=0x090b000d   -> GPIO group 9, pin 13; pad DW0 at 0xFD6D0B20
+  PWA0=1            -> active-high (no inversion)
+  GPC0(pin)=0x84000201 -> PMODE bits 7:4 = 0 (GPIO mode), TX not disabled
+  RPBA/PVID         -> valid Intel root port 8086:9a09; CCHK vendor check passes
+
+Dynamic state test (read-only ACPI calls + runtime PM):
+  D0       GGOV(PWG0)=1  DGPE=1  DGPS=0
+  D3cold   GGOV(PWG0)=0  DGPE=0  DGPS=0
+  D0       GGOV(PWG0)=1  DGPE=1  DGPS=0
+
+Conclusion:
+  The ACPI GPIO enable is asserted high in D0 and released in D3cold.
+  The rail still never comes up (DGPS=0). Fault is downstream of the GPIO:
+  pin/trace to VRM, VRM itself, or GPU load. BIOS-NVS/SGGP is not the cause.

@@ -1,0 +1,24 @@
+# Raw diagnostic artifacts — not for publication
+dmesg-full.txt
+dmesg-*.txt
+
+# Firmware tables and EC dumps
+acpi/
+*.aml
+*.dsl
+*.bin
+vbios.rom
+
+# Module build artifacts
+sanv_mod/*.ko
+sanv_mod/*.o
+sanv_mod/*.mod
+sanv_mod/*.mod.c
+sanv_mod/.*.cmd
+sanv_mod/Module.symvers
+sanv_mod/modules.order
+sanv_mod/.module-common.o
+
+# Python
+__pycache__/
+*.pyc
